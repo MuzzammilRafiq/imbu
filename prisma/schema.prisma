@@ -12,6 +12,26 @@ enum UserRole {
   USER
 }
 
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum Language {
+  JAVASCRIPT
+  PYTHON
+  JAVA
+}
+
+enum Category {
+  Array
+  String
+  Hashmap
+  Sorting
+  BinarySearch
+}
+
 model User {
   id                    String                 @id @default(cuid())
   name                  String?
@@ -77,4 +97,39 @@ model TwoFactorConfirmation {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId])
+}
+
+model Problem {
+  id           String     @id @default(cuid())
+  title        String
+  slug         String     @unique
+  difficulty   Difficulty
+  category     Category[]
+  likeCount    Int        @default(0)
+  dislikeCount Int        @default(0)
+  submissions  Int        @default(0)
+  accepted     Int        @default(0)
+
+  problemdata ProblemData?
+  testCases   TestCases?
+}
+
+model ProblemData {
+  id        String @id @default(cuid())
+  problemId String @unique
+
+  description     String   @db.Text
+  testCasesInput  String[]
+  testCasesOutput String[]
+
+  problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+}
+
+model TestCases {
+  id        String   @id @default(cuid())
+  problemId String   @unique
+  input     String[]
+  output    String[]
+
+  problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
 }

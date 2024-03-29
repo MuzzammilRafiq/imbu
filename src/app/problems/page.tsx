@@ -1,8 +1,11 @@
-import { currentUser } from "@/lib/auth";
+import { db } from "@/lib/db";
+import Table from "../_components/Table";
 
 const Problems = async () => {
-  // const user = await currentUser();
-  // console.log(user);
-  return <h1>Problems</h1>;
+  let data;
+  try {
+    data = await db.problem.findMany();
+  } catch (error) {}
+  return <Table data={data} />;
 };
 export default Problems;
