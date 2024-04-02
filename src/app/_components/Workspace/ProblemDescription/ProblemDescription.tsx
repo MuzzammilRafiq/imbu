@@ -1,4 +1,16 @@
-const ProblemDescription = () => {
+import { Problem, ProblemData } from "@prisma/client";
+import DOMPurify from "dompurify";
+interface Props {
+  problem: Problem;
+  problemData: ProblemData;
+}
+interface Description {
+  text: string;
+  examples: string[][];
+  constrains: [string];
+}
+const ProblemDescription = ({ problem, problemData }: Props) => {
+  const description: Description = JSON.parse(problemData.description);
   return (
     <div className="bg-dark-layer-1">
       {/* TAB */}
@@ -18,54 +30,46 @@ const ProblemDescription = () => {
           <div className="w-full">
             <div className="flex space-x-4">
               <div className="flex-1 mr-2 text-lg text-white font-medium">
-                {"problem?.title"}
+                {problem.title}
               </div>
             </div>
-            <div className="flex items-center mt-3">
-              <div
-                className={`inline-block rounded-[21px] bg-opacity-[.15] px-2.5 py-1 text-xs font-medium capitalize `}
-              >
-                {"currentProblem.difficulty"}
-              </div>
-            </div>
-
-            {/* Problem Statement(paragraphs) */}
             <div className="text-white text-sm">
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: " problem.problemStatement",
-                }}
-              />
-            </div>
-
-            {/* Examples */}
-            <div className="mt-4">
               <div>
-                <p className="font-medium text-white ">
-                  Example {"index" + 1}:{" "}
-                </p>
-                <div className="example-card">
-                  <pre>
-                    <strong className="text-white">Input: </strong>{" "}
-                    {"example.inputText"}
-                    <br />
-                    <strong>Output:</strong>
-                    {"example.outputText"} <br />
-                    {"example.explanation" && (
-                      <>
-                        <strong>Explanation:</strong> {"example.explanation"}
-                      </>
-                    )}
-                  </pre>
-                </div>
+                <p
+                  style={{ fontFamily: "Segoe UI" }}
+                  dangerouslySetInnerHTML={{
+                    __html: DOMPurify.sanitize(description.text),
+                  }}
+                />
               </div>
             </div>
-
-            {/* Constraints */}
+            <div className="mt-4">
+              {description.examples.map((eg, i) => (
+                <div key={i}>
+                  <p className="font-medium text-white">Example {i + 1}</p>
+                  <div className="example-card">
+                    <pre>
+                      <strong className="text-white">Input: </strong>
+                      {eg[0]} <br />
+                      <strong className="text-white">Output: </strong>
+                      {eg[1]} <br />
+                      <strong className="text-white">Explanation: </strong>
+                      {eg[2]}
+                    </pre>
+                  </div>
+                </div>
+              ))}
+            </div>
             <div className="my-8 pb-4">
               <div className="text-white text-sm font-medium">Constraints:</div>
-              <ul className="text-white ml-5 list-disc ">
-                <div />
+              <ul className="text-white ml-5 list-disc">
+                <div>
+                  {description.constrains.map((c, i) => (
+                    <li className="mt-2" key={i}>
+                      <code>{c}</code>
+                    </li>
+                  ))}
+                </div>
               </ul>
             </div>
           </div>
@@ -75,3 +79,16 @@ const ProblemDescription = () => {
   );
 };
 export default ProblemDescription;
+/**
+ * 
+function encode() {
+	var obj = document.getElementById('dencoder');
+	var unencoded = obj.value;
+	obj.value = encodeURIComponent(unencoded).replace(/'/g,"%27").replace(/"/g,"%22");	
+}
+function decode() {
+	var obj = document.getElementById('dencoder');
+	var encoded = obj.value;
+	obj.value = decodeURIComponent(encoded.replace(/\+/g,  " "));
+}
+*/

@@ -6,7 +6,7 @@ export const GET = async (req: Request) => {
 };
 export const POST = async (req: Request) => {
   try {
-    const { data } = await req.json();
+    const { description } = await req.json();
 
     const problem = await db.problem.create({
       data: {
@@ -19,7 +19,8 @@ export const POST = async (req: Request) => {
 
     const problemdata = await db.problemData.create({
       data: {
-        description: data,
+        description: JSON.stringify(description),
+        desscription: {},
         problemId: problem.id,
         testCasesInput: ["4\n1 2 3 4", "3\n1 3 3"],
         testCasesOutput: ["10", "7"],

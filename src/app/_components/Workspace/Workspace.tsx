@@ -1,29 +1,33 @@
 "use client";
-import useWindowSize from "@/hooks/use-window-size";
-import { ProblemData, Problem } from "@prisma/client";
 import { useState } from "react";
 import Split from "react-split";
 import ProblemDescription from "./ProblemDescription/ProblemDescription";
-import PlayGround from "./PlayGround/PlayGround";
+import Playground from "./Playground/Playground";
+import useWindowSize from "@/hooks/use-window-size";
+import { Problem, ProblemData } from "@prisma/client";
 
-interface WorkspaceProps {
+const Workspace = ({
+  problem,
+  problemData,
+}: {
   problem: Problem;
   problemData: ProblemData;
-}
-const Workspace = ({ problem, problemData }: WorkspaceProps) => {
-  // console.log({ problem, problemData });
+}) => {
   const { width, height } = useWindowSize();
   const [success, setSuccess] = useState(false);
   const [solved, setSolved] = useState(false);
+
   return (
     <Split className="split" minSize={0}>
-      <ProblemDescription />
+      <ProblemDescription problem={problem} problemData={problemData} />
       <div className="bg-dark-fill-2">
-        <PlayGround />
-        {/* {success && <Confetti gravity={0.3} tweenDuration={4000} width={width - 1} height={height - 1} />} */}
+        <Playground
+        // problem={problem}
+        // setSuccess={setSuccess}
+        // setSolved={setSolved}
+        />
       </div>
     </Split>
   );
 };
-
 export default Workspace;
