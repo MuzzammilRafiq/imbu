@@ -17,6 +17,7 @@ const navigation = [
   { name: "Problems", href: "/problems", current: false },
   { name: "Projects", href: "#", current: false },
   { name: "Calendar", href: "#", current: false },
+  { name: "AddProblem", href: "/addproblem", current: false },
 ];
 
 export default function Example() {

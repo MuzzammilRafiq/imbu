@@ -39,7 +39,7 @@ export const POST = async (req: Request) => {
       status: 201,
     });
   } catch (error: any) {
-    console.log(error);
+    // console.log(error);
     return new Response("something went wrong", { status: 500 });
   }
 };

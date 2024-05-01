@@ -1,71 +1,67 @@
-"use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Split from "react-split";
 import CodeMirror from "@uiw/react-codemirror";
 import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 import { javascript } from "@codemirror/lang-javascript";
-import { useRouter } from "next/navigation";
-import useLocalStorage from "@/hooks/use-local-storage";
-import PreferenceNav from "./PrefrenceNav";
 import EditorFooter from "./EditorFooter";
+import PreferenceNav from "./PreferenceNav/PreferenceNav";
+import useLocalStorage from "@/hooks/use-local-storage";
 
-type PlaygroundProps = {
-  //   problem: Problem;
-  setSuccess: React.Dispatch<React.SetStateAction<boolean>>;
-  setSolved: React.Dispatch<React.SetStateAction<boolean>>;
-};
-
-export interface ISettings {
+interface ISettings {
   fontSize: string;
   settingsModalIsOpen: boolean;
   dropdownIsOpen: boolean;
 }
 
-const PlayGround = () => {
+const Playground = () => {
   const [activeTestCaseId, setActiveTestCaseId] = useState<number>(0);
-  let [userCode, setUserCode] = useState<string>(
-    "const [activeTestCaseId, setActiveTestCaseId] = useState<number>(0);"
-  );
-
   const [fontSize, setFontSize] = useLocalStorage("lcc-fontSize", "16px");
-
   const [settings, setSettings] = useState<ISettings>({
     fontSize: fontSize,
     settingsModalIsOpen: false,
     dropdownIsOpen: false,
   });
-
-  // const {
-  //   query: { slug },
-  // } = useRouter();
-
-  const handleSubmit = async () => {};
-
-  const onChange = (value: string) => {
-    setUserCode(value);
-    localStorage.setItem(`code-${"pid"}`, JSON.stringify(value));
-  };
-
+  const eg = [
+    {
+      id: 1,
+      inputText: "nums = [2,7,11,15], target = 9",
+      outputText: "[0,1]",
+      explanation: "Because nums[0] + nums[1] == 9, we return [0, 1].",
+      img: undefined,
+    },
+    {
+      id: 2,
+      inputText: "nums = [3,2,4], target = 6",
+      outputText: "[1,2]",
+      explanation: "Because nums[1] + nums[2] == 6, we return [1, 2].",
+      img: undefined,
+    },
+    {
+      id: 3,
+      inputText: " nums = [3,3], target = 6",
+      outputText: "[0,1]",
+      img: undefined,
+    },
+  ];
   return (
-    <div className="flex flex-col bg-dark-layer-1 relative overflow-x-hidden">
-      <PreferenceNav />
-
+    <div className=" bg-[#1e1e1e]  overflow-x-hidden">
+      <PreferenceNav settings={settings} setSettings={setSettings} />
       <Split
         className="h-[calc(100vh-94px)]"
         direction="vertical"
         sizes={[60, 40]}
         minSize={60}
       >
-        <div className="w-full overflow-auto bg-blue-600">
+        <div className="w-full overflow-auto">
           <CodeMirror
-            value={userCode}
+            value={"kebdkje"}
             theme={vscodeDark}
-            onChange={onChange}
+            // onChange={onChange}
             extensions={[javascript()]}
             style={{ fontSize: settings.fontSize }}
           />
         </div>
-        <div className="w-full px-5 overflow-auto bg-green-600">
+        <div className="w-full px-5 overflow-auto">
           {/* testcase heading */}
           <div className="flex h-10 items-center space-x-6">
             <div className="relative flex h-full flex-col justify-center cursor-pointer">
@@ -76,8 +72,8 @@ const PlayGround = () => {
             </div>
           </div>
 
-          {/* <div className="flex">
-            {problem.examples.map((example, index) => (
+          <div className="flex">
+            {eg.map((example, index) => (
               <div
                 className="mr-2 items-start mt-2 "
                 key={example.id}
@@ -94,18 +90,30 @@ const PlayGround = () => {
                 </div>
               </div>
             ))}
-          </div> */}
+          </div>
 
           <div className="font-semibold my-4">
             <p className="text-sm font-medium mt-4 text-white">Input:</p>
-            <div className="w-full cursor-text rounded-lg border px-3 py-[10px] bg-dark-fill-3 border-transparent text-white mt-2"></div>
+            <div className="w-full cursor-text rounded-lg border px-3 py-[10px] bg-dark-fill-3 border-transparent text-white mt-2">
+              {eg[activeTestCaseId].inputText}
+            </div>
             <p className="text-sm font-medium mt-4 text-white">Output:</p>
-            <div className="w-full cursor-text rounded-lg border px-3 py-[10px] bg-dark-fill-3 border-transparent text-white mt-2"></div>
+            <div className="w-full cursor-text rounded-lg border px-3 py-[10px] bg-dark-fill-3 border-transparent text-white mt-2">
+              {eg[activeTestCaseId].outputText}
+            </div>
           </div>
         </div>
       </Split>
-      <EditorFooter handleSubmit={handleSubmit} />
+      <EditorFooter />
     </div>
   );
 };
-export default PlayGround;
+export default Playground;
+
+type Example = {
+  id: number;
+  inputText: string;
+  outputText: string;
+  explanation?: string;
+  img?: string;
+};
